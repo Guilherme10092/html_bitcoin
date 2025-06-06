@@ -45,6 +45,8 @@
       <label class="flex items-center">
         Dias atrás:
         <select id="days" class="ml-2 p-2 border rounded">
+          <option value="0.17">4 horas</option> <!-- Nova opção -->
+          <option value="0.5">12 horas</option> <!-- Nova opção -->
           <option value="1">1 dia</option>
           <option value="7">7 dias</option>
           <option value="14">14 dias</option>
@@ -52,8 +54,6 @@
           <option value="90">90 dias</option>
           <option value="180">180 dias</option>
           <option value="365">1 ano</option>
-          <option value="0.17">4 horas</option> <!-- Nova opção -->
-          <option value="0.5">12 horas</option> <!-- Nova opção -->
         </select>
       </label>
     </div>
@@ -148,4 +148,3 @@
   </script>
 </body>
 </html>
-
