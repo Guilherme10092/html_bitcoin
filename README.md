@@ -4,48 +4,76 @@
   <meta charset="UTF-8">
   <title>Bitcoin - Preço e Histórico</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/lib/index.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/lib/index.css" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    .info { margin-bottom: 20px; font-size: 18px; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f3f4f6;
+    }
+    .info {
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
     .up { color: green; }
     .down { color: red; }
     label { margin-right: 10px; }
+    .section {
+      margin-bottom: 20px;
+    }
   </style>
 </head>
-<body>
-  <div class="info">
-    <label>Moeda:
-      <select id="currency">
-        <option value="usd">USD</option>
-        <option value="eur">EUR</option>
-        <option value="brl">BRL</option>
-        <option value="gbp">GBP</option>
-        <option value="jpy">JPY</option>
-      </select>
-    </label>
+<body class="bg-gray-100 p-8">
+  <div class="container mx-auto">
+    <div class="flex justify-between mb-4">
+      <div class="text-xl font-semibold">Bitcoin - Preço e Histórico</div>
+      <button id="refreshBtn" class="px-4 py-2 bg-blue-500 text-white rounded">Atualizar</button>
+    </div>
 
-    <label>Dias atrás:
-      <select id="days">
-        <option value="1">1 dia</option>
-        <option value="7">7 dias</option>
-        <option value="14">14 dias</option>
-        <option value="30">30 dias</option>
-        <option value="90">90 dias</option>
-        <option value="180">180 dias</option>
-        <option value="365">1 ano</option>
-      </select>
-    </label>
+    <div class="section flex gap-6">
+      <label class="flex items-center">
+        Moeda:
+        <select id="currency" class="ml-2 p-2 border rounded">
+          <option value="usd">USD</option>
+          <option value="eur">EUR</option>
+          <option value="brl">BRL</option>
+          <option value="gbp">GBP</option>
+          <option value="jpy">JPY</option>
+        </select>
+      </label>
 
-    <div>Preço atual: <span id="price">Carregando...</span></div>
-    <div>Variação 24h: <span id="change">Carregando...</span></div>
+      <label class="flex items-center">
+        Dias atrás:
+        <select id="days" class="ml-2 p-2 border rounded">
+          <option value="1">1 dia</option>
+          <option value="7">7 dias</option>
+          <option value="14">14 dias</option>
+          <option value="30">30 dias</option>
+          <option value="90">90 dias</option>
+          <option value="180">180 dias</option>
+          <option value="365">1 ano</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="section">
+      <div>Preço atual: <span id="price">Carregando...</span></div>
+      <div>Variação 24h: <span id="change">Carregando...</span></div>
+      <div id="trend">Indicador de Tendência: Carregando...</div>
+      <div id="high">Máximo 24h: Carregando...</div>
+      <div id="low">Mínimo 24h: Carregando...</div>
+    </div>
+
+    <canvas id="btcChart" width="800" height="400"></canvas>
   </div>
-
-  <canvas id="btcChart" width="800" height="400"></canvas>
 
   <script>
     const ctx = document.getElementById('btcChart').getContext('2d');
     const currencySelect = document.getElementById('currency');
     const daysSelect = document.getElementById('days');
+    const refreshBtn = document.getElementById('refreshBtn');
 
     const btcChart = new Chart(ctx, {
       type: 'line',
@@ -60,9 +88,7 @@
       },
       options: {
         scales: {
-          y: {
-            beginAtZero: false
-          }
+          y: { beginAtZero: false }
         }
       }
     });
@@ -72,11 +98,21 @@
       const data = await res.json();
       const price = data.market_data.current_price[currency];
       const change = data.market_data.price_change_percentage_24h;
+      const high_24h = data.market_data.high_24h[currency];
+      const low_24h = data.market_data.low_24h[currency];
 
       document.getElementById('price').innerText = `${price.toLocaleString()} ${currency.toUpperCase()}`;
       const changeEl = document.getElementById('change');
       changeEl.innerText = `${change.toFixed(2)}%`;
       changeEl.className = change >= 0 ? 'up' : 'down';
+
+      const trendEl = document.getElementById('trend');
+      trendEl.innerText = change >= 0 ? "Tendência de Alta" : "Tendência de Baixa";
+      trendEl.style.color = change >= 0 ? 'green' : 'red';
+
+      // Exibe máximo e mínimo de 24h
+      document.getElementById('high').innerText = `Máximo 24h: ${high_24h.toLocaleString()} ${currency.toUpperCase()}`;
+      document.getElementById('low').innerText = `Mínimo 24h: ${low_24h.toLocaleString()} ${currency.toUpperCase()}`;
     }
 
     async function fetchHistoricalData(currency, days) {
@@ -106,6 +142,7 @@
 
     currencySelect.addEventListener('change', updateAll);
     daysSelect.addEventListener('change', updateAll);
+    refreshBtn.addEventListener('click', updateAll);
 
     updateAll();
   </script>
