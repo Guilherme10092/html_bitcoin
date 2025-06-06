@@ -20,9 +20,7 @@
     .up { color: green; }
     .down { color: red; }
     label { margin-right: 10px; }
-    .section {
-      margin-bottom: 20px;
-    }
+    .section { margin-bottom: 20px; }
   </style>
 </head>
 <body class="bg-gray-100 p-8">
@@ -54,6 +52,8 @@
           <option value="90">90 dias</option>
           <option value="180">180 dias</option>
           <option value="365">1 ano</option>
+          <option value="0.17">4 horas</option> <!-- Nova opção -->
+          <option value="0.5">12 horas</option> <!-- Nova opção -->
         </select>
       </label>
     </div>
@@ -148,3 +148,4 @@
   </script>
 </body>
 </html>
+
