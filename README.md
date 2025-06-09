@@ -27,6 +27,7 @@
   <div class="container mx-auto">
     <div class="flex justify-between mb-4">
       <div class="text-xl font-semibold">Bitcoin - Preço e Histórico</div>
+      <button id="refreshBtn" class="px-4 py-2 bg-blue-500 text-white rounded">Atualizar</button>
     </div>
 
     <div class="section flex gap-6">
@@ -53,8 +54,6 @@
           <option value="90">90 dias</option>
           <option value="180">180 dias</option>
           <option value="365">1 ano</option>
-          <option value="0.17">4 horas</option> <!-- Nova opção -->
-          <option value="0.5">12 horas</option> <!-- Nova opção -->
         </select>
       </label>
     </div>
@@ -74,6 +73,7 @@
     const ctx = document.getElementById('btcChart').getContext('2d');
     const currencySelect = document.getElementById('currency');
     const daysSelect = document.getElementById('days');
+    const refreshBtn = document.getElementById('refreshBtn');
 
     const btcChart = new Chart(ctx, {
       type: 'line',
@@ -110,6 +110,7 @@
       trendEl.innerText = change >= 0 ? "Tendência de Alta" : "Tendência de Baixa";
       trendEl.style.color = change >= 0 ? 'green' : 'red';
 
+      // Exibe máximo e mínimo de 24h
       document.getElementById('high').innerText = `Máximo 24h: ${high_24h.toLocaleString()} ${currency.toUpperCase()}`;
       document.getElementById('low').innerText = `Mínimo 24h: ${low_24h.toLocaleString()} ${currency.toUpperCase()}`;
     }
@@ -141,9 +142,9 @@
 
     currencySelect.addEventListener('change', updateAll);
     daysSelect.addEventListener('change', updateAll);
+    refreshBtn.addEventListener('click', updateAll);
 
     updateAll();
   </script>
 </body>
 </html>
-
