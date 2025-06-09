@@ -2,38 +2,29 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bitcoin - Preço e Histórico</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/lib/index.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/lib/index.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background-color: #f3f4f6;
-    }
-    .info {
-      margin-bottom: 20px;
-      font-size: 18px;
-    }
     .up { color: green; }
     .down { color: red; }
-    label { margin-right: 10px; }
-    .section { margin-bottom: 20px; }
   </style>
 </head>
-<body class="bg-gray-100 p-8">
-  <div class="container mx-auto">
-    <div class="flex justify-between mb-4">
-      <div class="text-xl font-semibold">Bitcoin - Preço e Histórico</div>
-      <button id="refreshBtn" class="px-4 py-2 bg-blue-500 text-white rounded">Atualizar</button>
+<body class="bg-gray-100 p-4 sm:p-8">
+  <div class="max-w-5xl mx-auto">
+    <!-- Cabeçalho -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+      <h1 class="text-2xl font-bold">Bitcoin - Preço e Histórico</h1>
+      <button id="refreshBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Atualizar</button>
     </div>
 
-    <div class="section flex gap-6">
-      <label class="flex items-center">
-        Moeda:
-        <select id="currency" class="ml-2 p-2 border rounded">
+    <!-- Seleções -->
+    <div class="flex flex-col sm:flex-row gap-4 mb-6">
+      <label class="flex flex-col sm:flex-row items-start sm:items-center">
+        <span class="mb-1 sm:mb-0">Moeda:</span>
+        <select id="currency" class="ml-0 sm:ml-2 p-2 border rounded w-full sm:w-auto">
           <option value="usd">USD</option>
           <option value="eur">EUR</option>
           <option value="brl">BRL</option>
@@ -42,11 +33,11 @@
         </select>
       </label>
 
-      <label class="flex items-center">
-        Dias atrás:
-        <select id="days" class="ml-2 p-2 border rounded">
-          <option value="0.17">4 horas</option> <!-- Nova opção -->
-          <option value="0.5">12 horas</option> <!-- Nova opção -->
+      <label class="flex flex-col sm:flex-row items-start sm:items-center">
+        <span class="mb-1 sm:mb-0">Dias atrás:</span>
+        <select id="days" class="ml-0 sm:ml-2 p-2 border rounded w-full sm:w-auto">
+          <option value="0.17">4 horas</option>
+          <option value="0.5">12 horas</option>
           <option value="1">1 dia</option>
           <option value="7">7 dias</option>
           <option value="14">14 dias</option>
@@ -58,15 +49,19 @@
       </label>
     </div>
 
-    <div class="section">
-      <div>Preço atual: <span id="price">Carregando...</span></div>
-      <div>Variação 24h: <span id="change">Carregando...</span></div>
-      <div id="trend">Indicador de Tendência: Carregando...</div>
-      <div id="high">Máximo 24h: Carregando...</div>
-      <div id="low">Mínimo 24h: Carregando...</div>
+    <!-- Informações -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-lg">
+      <div>Preço atual: <span id="price" class="font-medium">Carregando...</span></div>
+      <div>Variação 24h: <span id="change" class="font-medium">Carregando...</span></div>
+      <div id="trend" class="font-medium">Indicador de Tendência: Carregando...</div>
+      <div id="high" class="font-medium">Máximo 24h: Carregando...</div>
+      <div id="low" class="font-medium">Mínimo 24h: Carregando...</div>
     </div>
 
-    <canvas id="btcChart" width="800" height="400"></canvas>
+    <!-- Gráfico -->
+    <div class="w-full">
+      <canvas id="btcChart" class="w-full h-64 sm:h-80 md:h-96"></canvas>
+    </div>
   </div>
 
   <script>
@@ -87,6 +82,8 @@
         }]
       },
       options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
           y: { beginAtZero: false }
         }
@@ -110,7 +107,6 @@
       trendEl.innerText = change >= 0 ? "Tendência de Alta" : "Tendência de Baixa";
       trendEl.style.color = change >= 0 ? 'green' : 'red';
 
-      // Exibe máximo e mínimo de 24h
       document.getElementById('high').innerText = `Máximo 24h: ${high_24h.toLocaleString()} ${currency.toUpperCase()}`;
       document.getElementById('low').innerText = `Mínimo 24h: ${low_24h.toLocaleString()} ${currency.toUpperCase()}`;
     }
